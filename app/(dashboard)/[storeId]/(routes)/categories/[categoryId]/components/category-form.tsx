@@ -3,7 +3,7 @@
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
-import { Category } from '@prisma/client'
+import { Billboard, Category } from '@prisma/client'
 import { Trash } from 'lucide-react'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -15,7 +15,7 @@ import { AlertModal } from '@/components/modals/alert-modal'
 import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
-import { Select, SelectTrigger, SelectValue, SelectContent } from '@/components/ui/select'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
 const formSchema = z.object({
     name:z.string().min(1),
@@ -24,11 +24,12 @@ const formSchema = z.object({
 type CategoryFormValues = z.infer<typeof formSchema>
 
 interface CategoryFormProps {
-    initialData:Category | null
+    initialData:Category | null;
+    billboards:Billboard[]
 }
 
 
-export const CategoryForm :React.FC<CategoryFormProps> = ({initialData}) => {
+export const CategoryForm :React.FC<CategoryFormProps> = ({initialData, billboards}) => {
     const params = useParams();
     const router = useRouter()
     const [open, setOpen] = useState(false)
@@ -52,12 +53,12 @@ export const CategoryForm :React.FC<CategoryFormProps> = ({initialData}) => {
         try {
             setLoading(true);
             if (initialData) {
-                await axios.patch(`/api/${params.storeId}/categorys/${params.categoryId}`, data)
+                await axios.patch(`/api/${params.storeId}/categories/${params.categoryId}`, data)
             }else{
-                await axios.post(`/api/${params.storeId}/categorys`, data)
+                await axios.post(`/api/${params.storeId}/categories`, data)
             }
             router.refresh()
-            router.push(`/${params.storeId}/categorys`)
+            router.push(`/${params.storeId}/categories`)
             toast.success(toastMessage)
         }catch (error) {
             toast.error("Something went wrong.")
@@ -69,12 +70,12 @@ export const CategoryForm :React.FC<CategoryFormProps> = ({initialData}) => {
     const onDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/categorys/${params.categoryId}`)
+            await axios.delete(`/api/${params.storeId}/categories/${params.categoryId}`)
             router.refresh()
-            router.push(`/${params.storeId}/categorys`)
+            router.push(`/${params.storeId}/categories`)
             toast.success("category deleted")
         }catch (error) {
-            toast.error("Make sure you removed all catagories  using the category.")
+            toast.error("Failed to delete category")
         }finally{
             setLoading(false)
             setOpen(false)
@@ -143,7 +144,14 @@ export const CategoryForm :React.FC<CategoryFormProps> = ({initialData}) => {
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    
+                                    {billboards.map((billboard) => (
+                                        <SelectItem
+                                            key={billboard.id}
+                                            value={billboard.id}
+                                        >
+                                            {billboard.label}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                                 
                             </Select>

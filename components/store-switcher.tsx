@@ -11,11 +11,13 @@ import { cn } from "@/lib/utils";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
+
 interface StoreSwitcherProps extends PopoverTriggerProps {
+    
     items:Store[]
 }
 export default function StoreSwitcher({
-    classname,
+    className,
     items = []
  }:StoreSwitcherProps){
     const storeModal  = useStoreModal();
@@ -40,15 +42,15 @@ export default function StoreSwitcher({
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
-                variant='outline'
-                size='sm'
-                role='combobox'
-                aria-expanded={open}
-                aria-label="select a store"
-                className={cn('w-[200px] justify-between', classname)}
+                    variant='outline'
+                    size='sm'
+                    role='combobox'
+                    aria-expanded={open}
+                    aria-label="select a store"
+                    className={cn('w-[200px] justify-between', className)}
                 >
                     <StoreIcon className="mr-2 w-4 h-4"/>
-                     Current Store
+                    {currentStore?.label}
                     <ChevronsUpDown className="ml_auto h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
@@ -65,7 +67,7 @@ export default function StoreSwitcher({
                                     className="text-sm"
                                 >
                                     <StoreIcon className="mr-2 w-4 h-4"/> 
-                                    {currentStore?.label}
+                                    {store.label}
                                     <Check
                                         className={cn('ml-auto h-4 w-4', 
                                             currentStore?.value === store.value 

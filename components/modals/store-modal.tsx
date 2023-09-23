@@ -19,6 +19,7 @@ const formSchema = z.object({
 export const StoreModal = () => {
     const storeModal = useStoreModal()
     const [loading, setLoading] = useState(false)
+
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues:{
@@ -31,7 +32,7 @@ export const StoreModal = () => {
         setLoading(true)
         const response = await axios.post('/api/stores', values)
         window.location.assign(`/${response.data.id}`)
-      } catch (error) {
+      }catch (error) {
         toast.error('Something went wrong')
       }
       finally{

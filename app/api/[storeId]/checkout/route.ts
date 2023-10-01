@@ -66,8 +66,8 @@ export async function POST(
         currency: 'ETB',    
         amount: totalAmount.toString(), 
         tx_ref: tx_ref,
-        callback_url: 'http://localhost:3000/api/webhook', 
-        return_url: "http://localhost:3001",
+        callback_url: process.env.WEBBOOK_URL, 
+        return_url: process.env.FRONTEND_STORE_URL,
         customization: {
           title: 'Product Checkout',
           description: 'Purchase multiple products', 
